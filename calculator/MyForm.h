@@ -425,7 +425,9 @@ public
 		}
 
 		System::String ^ tempValue = "";
-		System::String ^ operationType = "plus";
+		System::String ^ operationType = "";
+		double firstValue = 0;
+		bool operationPerformed = false;
 
 #pragma endregion
 	private:
@@ -434,87 +436,72 @@ public
 		}
 
 	private:
-		System::Void btn1_Click(System::Object ^ sender, System::EventArgs ^ e)
+		System::Void NumberButton_Click(System::String ^ number)
 		{
-			input->Text = input->Text + "1";
+			if (operationPerformed)
+			{
+				input->Text = "";
+				operationPerformed = false;
+			}
+			input->Text += number;
 		}
 
 	private:
-		System::Void btn2_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "2";
-		}
+		System::Void btn1_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("1"); }
+	private:
+		System::Void btn2_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("2"); }
+	private:
+		System::Void btn3_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("3"); }
+	private:
+		System::Void btn4_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("4"); }
+	private:
+		System::Void btn5_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("5"); }
+	private:
+		System::Void btn6_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("6"); }
+	private:
+		System::Void btn7_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("7"); }
+	private:
+		System::Void btn8_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("8"); }
+	private:
+		System::Void btn9_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("9"); }
+	private:
+		System::Void btn0_Click(System::Object ^ sender, System::EventArgs ^ e) { NumberButton_Click("0"); }
 
 	private:
-		System::Void btn3_Click(System::Object ^ sender, System::EventArgs ^ e)
+		System::Void OperationButton_Click(System::String ^ operation)
 		{
-			input->Text = input->Text + "3";
-		}
-
-	private:
-		System::Void btn4_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "4";
-		}
-
-	private:
-		System::Void btn5_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "5";
-		}
-
-	private:
-		System::Void btn6_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "6";
-		}
-
-	private:
-		System::Void btn7_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "7";
-		}
-
-	private:
-		System::Void btn8_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "8";
-		}
-
-	private:
-		System::Void btn9_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "9";
-		}
-
-	private:
-		System::Void btn0_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			input->Text = input->Text + "0";
-		}
-
-	private:
-		System::Void plusbtn_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			operationType = "plus";
+			if (tempValue != "")
+			{
+				equalbtn_Click(nullptr, nullptr);
+			}
+			
 			tempValue = input->Text;
-			input->Text = "";
+			operationType = operation;
+			operationPerformed = true;
 		}
+
+	private:
+		System::Void plusbtn_Click(System::Object ^ sender, System::EventArgs ^ e) { OperationButton_Click("plus"); }
+	private:
+		System::Void minusbtn_Click(System::Object ^ sender, System::EventArgs ^ e) { OperationButton_Click("minus"); }
+	private:
+		System::Void multiplybtn_Click(System::Object ^ sender, System::EventArgs ^ e) { OperationButton_Click("multiply"); }
+	private:
+		System::Void divisionbtn_Click(System::Object ^ sender, System::EventArgs ^ e) { OperationButton_Click("division"); }
 
 	private:
 		System::Void equalbtn_Click(System::Object ^ sender, System::EventArgs ^ e)
 		{
 			if (tempValue != "")
 			{
-				int value_one = Convert::ToInt32(tempValue);
-				int value_two = Convert::ToInt32(input->Text);
-				int result = 0;
+				double value_one = Convert::ToDouble(tempValue);
+				double value_two = Convert::ToDouble(input->Text);
+				double result = 0;
 
 				if (operationType == "plus")
 				{
 					result = value_one + value_two;
 				}
-
 				else if (operationType == "minus")
 				{
 					result = value_one - value_two;
@@ -525,11 +512,17 @@ public
 				}
 				else if (operationType == "division")
 				{
-					result = value_one / value_two;
+					if (value_two != 0)
+						result = value_one / value_two;
+					else
+						input->Text = "Error";
 				}
 
-				input->Text = result.ToString();
-				tempValue = "";
+				if (input->Text != "Error")
+					input->Text = result.ToString();
+				
+				tempValue = input->Text;
+				operationPerformed = true;
 			}
 		}
 
@@ -537,30 +530,8 @@ public
 		System::Void clearbtn_Click(System::Object ^ sender, System::EventArgs ^ e)
 		{
 			input->Text = "";
-		}
-
-	private:
-		System::Void minusbtn_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			operationType = "minus";
-			tempValue = input->Text;
-			input->Text = "";
-		}
-
-	private:
-		System::Void multiplybtn_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			operationType = "multiply";
-			tempValue = input->Text;
-			input->Text = "";
-		}
-
-	private:
-		System::Void divisionbtn_Click(System::Object ^ sender, System::EventArgs ^ e)
-		{
-			operationType = "division";
-			tempValue = input->Text;
-			input->Text = "";
+			tempValue = "";
+			operationType = "";
 		}
 	};
 }
